@@ -1,4 +1,4 @@
-import CheckoutBox from "@/components/CheckoutBox";
+import CheckoutBox from "@/components/Payment/CheckoutBox";
 import { NextPage } from "next";
 
 const DonatePage: NextPage = () => {
