@@ -23,11 +23,14 @@ export async function generatePaymentIntentWithCart(cartItems: CartItem[]) {
     }
 }
 
-// export function convertBasketToCart(basket: BasketItemType[]) {
-//     return basket.map((item) => {
-//         return {
-//             quantity: item.quantity,
-//             price: item.product.price,
-//         };
-//     });
+// export function convertBasketToCart(basket: BasketItemTypes) {
+//     const result: CartItem[] = [];
+
+//     for (let v of Array.from(basket.values())) {
+//         result.push({
+//             price: v.product.price,
+//             quantity: v.quantity,
+//         });
+//     }
+//     return result;
 // }
