@@ -1,25 +1,5 @@
 import { CartItem } from "@/types/cart";
 
-export const zeroDecimalCurrencies = new Set([
-    "BIF",
-    "CLP",
-    "DJF",
-    "GNF",
-    "JPY",
-    "KMF",
-    "KRW",
-    "MGA",
-    "PYG",
-    "RWF",
-    "UGX",
-    "VND",
-    "VUV",
-    "XAF",
-    "XOF",
-    "XPF",
-    // ... add any other zero-decimal currencies
-]);
-
 export async function generatePaymentIntentWithCart(cartItems: CartItem[]) {
     try {
         const response = await fetch("/api/create-payment-intent", {
