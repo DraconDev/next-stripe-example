@@ -48,7 +48,7 @@ export default function CheckoutForm() {
             }
         });
         // Add window.location.search as a dependency
-    }, [stripe, window.location.search]);
+    }, [stripe]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -67,9 +67,7 @@ export default function CheckoutForm() {
                 // Make sure to change this to your payment completion page
                 return_url: return_url,
             },
-            // redirect: "if_required",
         });
-
         // This point will only be reached if there is an immediate error when
         // confirming the payment. Otherwise, your customer will be redirected to
         // your `return_url`. For some payment methods like iDEAL, your customer will
@@ -93,6 +91,7 @@ export default function CheckoutForm() {
             onSubmit={handleSubmit}
             className="bg-slate-300 p-3"
         >
+            hey
             <PaymentElement
                 id="payment-element"
                 // options={paymentElementOptions}

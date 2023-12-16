@@ -5,35 +5,27 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { useEffect } from "react";
 import CheckoutForm from "./CheckoutForm";
+import { generatePaymentIntentWithCart } from "./helper";
 
 const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
-export async function generatePaymentIntentWithCart(cartItems: CartItem[]) {
-    try {
-        const response = await fetch("/api/create-payment-intent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ cartItems: cartItems }),
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
-        const data = await response.json();
-        return data.clientSecret;
-    } catch (error) {
-        throw error;
-    }
-}
-
-const CheckoutWrapper = ({ children }: { children?: React.ReactNode }) => {
+const CheckoutBox = () => {
     const [clientSecret, setClientSecret] = React.useState("");
 
     useEffect(() => {
-        generatePaymentIntentWithCart([]).then((secret) => {
+        let dummyCartItems: CartItem[] = [
+            {
+                id: "1",
+                name: "Item 1",
+                price: 200,
+                quantity: 1,
+                currency: "USD",
+            },
+        ];
+
+        generatePaymentIntentWithCart(dummyCartItems).then((secret) => {
             setClientSecret(secret);
         });
     }, []);
@@ -53,11 +45,10 @@ const CheckoutWrapper = ({ children }: { children?: React.ReactNode }) => {
                     stripe={stripePromise}
                 >
                     <CheckoutForm />
-                    {children && children}
                 </Elements>
             )}
         </div>
     );
 };
 
-export default CheckoutWrapper;
+export default CheckoutBox;

@@ -1,3 +1,4 @@
+import { zeroDecimalCurrencies } from "@/components/Payment/helper";
 import { CartItem } from "@/types/cart";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -5,10 +6,13 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const calculateOrderAmount = (items: CartItem[]) => {
     let sum = 0;
+    if (items.length === 0) {
+        return 0;
+    }
     for (const item of items) {
         sum += item.price * item.quantity;
     }
-    return sum;
+    return items[0].currency in zeroDecimalCurrencies ? sum : sum * 100;
 };
 
 export async function POST(req: NextRequest, res: NextResponse) {
