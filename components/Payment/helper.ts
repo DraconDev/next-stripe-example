@@ -1,11 +1,15 @@
 import { CartItem } from "@/types/payment";
+import { ACTIVE_CURRENCY } from "./consts";
 
 export async function generatePaymentIntentWithCart(cartItems: CartItem[]) {
     try {
         const response = await fetch("/api/create-payment-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ cartItems: cartItems }),
+            body: JSON.stringify({
+                cartItems: cartItems,
+                currency: ACTIVE_CURRENCY,
+            }),
         });
 
         if (!response.ok) {
