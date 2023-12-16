@@ -22,3 +22,12 @@ export async function generatePaymentIntentWithCart(cartItems: CartItem[]) {
         throw error;
     }
 }
+
+// export function convertBasketToCart(basket: BasketItemType[]) {
+//     return basket.map((item) => {
+//         return {
+//             quantity: item.quantity,
+//             price: item.product.price,
+//         };
+//     });
+// }
