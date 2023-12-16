@@ -5,6 +5,7 @@ import {
     useStripe,
 } from "@stripe/react-stripe-js";
 import React, { useState } from "react";
+import { IS_TEST_MODE, TEST_CARD_NUMBER } from "./consts";
 
 export default function CheckoutForm() {
     const stripe = useStripe();
@@ -86,33 +87,42 @@ export default function CheckoutForm() {
     };
 
     return (
-        <form
-            id="payment-form"
-            onSubmit={handleSubmit}
-            className="bg-slate-300 p-3"
-        >
-            hey
-            <PaymentElement
-                id="payment-element"
-                // options={paymentElementOptions}
-            />
-            <button
-                disabled={isLoading || !stripe || !elements}
-                id="submit"
+        <div className="">
+            <div className="mb-4">
+                {IS_TEST_MODE
+                    ? "Use this card to test: " + TEST_CARD_NUMBER
+                    : ""}
+            </div>
+            <form
+                id="payment-form"
+                onSubmit={handleSubmit}
+                className="bg-white p-4 rounded-lg gap-2 flex flex-col"
             >
-                <span id="button-text">
-                    {isLoading ? (
-                        <div
-                            className="spinner"
-                            id="spinner"
-                        ></div>
-                    ) : (
-                        "Pay now"
-                    )}
-                </span>
-            </button>
-            {/* Show any error or success messages */}
-            {message && <div id="payment-message">{message}</div>}
-        </form>
+                <PaymentElement
+                    id="payment-element"
+                    // options={paymentElementOptions}
+                />
+                <div className="flex justify-end">
+                    <button
+                        disabled={isLoading || !stripe || !elements}
+                        id="submit"
+                        className="p-2 bg-slate-200 rounded"
+                    >
+                        <span id="button-text">
+                            {isLoading ? (
+                                <div
+                                    className="spinner"
+                                    id="spinner"
+                                ></div>
+                            ) : (
+                                "Pay now"
+                            )}
+                        </span>
+                    </button>
+                </div>
+                {/* Show any error or success messages */}
+                {message && <div id="payment-message">{message}</div>}
+            </form>
+        </div>
     );
 }
