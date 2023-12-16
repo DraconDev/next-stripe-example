@@ -20,4 +20,6 @@ export const zeroDecimalCurrencies = new Set([
 
 export const IS_TEST_MODE = true;
 
+export const ACTIVE_CURRENCY = "USD";
+
 export const TEST_CARD_NUMBER = "4242 4242 4242 4242";
