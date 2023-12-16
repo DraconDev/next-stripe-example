@@ -80,3 +80,5 @@ export async function POST(req: NextRequest, res: NextResponse) {
         return NextResponse.json({ error: "Error creating checkout session" });
     }
 }
+
+// This is your test secret API key.
