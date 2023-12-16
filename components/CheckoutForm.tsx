@@ -1,11 +1,13 @@
+"use client";
+import { CartItem } from "@/types/cart";
 import getStripe from "@/utils/get-stripe";
 import { FormEvent } from "react";
 import { Stripe } from "stripe";
-// ...
 
 type Props = {};
 
 const CheckoutForm = (props: Props) => {
+    const cartItems: CartItem[] = [];
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         // Create a Checkout Session.
@@ -14,7 +16,7 @@ const CheckoutForm = (props: Props) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ amount: 3 }),
+            body: JSON.stringify({ cartItems }),
         });
 
         if (!response.ok) {
@@ -40,9 +42,14 @@ const CheckoutForm = (props: Props) => {
     // ...
 
     return (
-        <div>
-            <button>buy</button>
+        <div className="flex flex-col">
             CheckoutForm
+            <button
+                onClick={handleSubmit}
+                className="p-2"
+            >
+                buy
+            </button>
         </div>
     );
 };
