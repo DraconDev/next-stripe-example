@@ -13,14 +13,8 @@ export default function CheckoutForm() {
     const [message, setMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-    // const [urlUpdate, setUrlUpdate] = useState<string | null>(null);
-
-    // React.useEffect(() => {
-    //     const queryClientSecret = new URLSearchParams(
-    //         window.location.search
-    //     ).get("payment_intent_client_secret");
-    //     setUrlUpdate(queryClientSecret);
-    // }, []);
+    // http://localhost:3000/checkout/success"
+    const return_url = "http://localhost:3000/orders";
 
     React.useEffect(() => {
         if (!stripe) {
@@ -71,7 +65,7 @@ export default function CheckoutForm() {
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                return_url: "http://localhost:3000/checkout/success",
+                return_url: return_url,
             },
             // redirect: "if_required",
         });
