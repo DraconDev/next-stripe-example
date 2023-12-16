@@ -11,13 +11,11 @@ const calculateOrderAmount = (items: CartItem[]) => {
 };
 
 export async function POST(req: NextRequest, res: NextResponse) {
-    const { cartDetails } = await req.json();
-
-    const cartDetailsArray: CartItem[] = Object.values(cartDetails);
+    const { cartItems }: { cartItems: CartItem[] } = await req.json();
 
     try {
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: calculateOrderAmount(cartDetailsArray),
+            amount: calculateOrderAmount(cartItems),
             currency: "eur",
             // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
             automatic_payment_methods: {
