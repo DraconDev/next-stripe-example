@@ -3,12 +3,13 @@ import { generatePaymentIntentWithCart } from "@/utils/generatePaymentIntentWith
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { useEffect } from "react";
+import CheckoutForm from "./CheckoutForm";
 
 const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
-const CheckoutWrapper = ({ children }: { children: React.ReactNode }) => {
+const CheckoutWrapper = ({ children }: { children?: React.ReactNode }) => {
     const [clientSecret, setClientSecret] = React.useState("");
 
     useEffect(() => {
@@ -31,7 +32,8 @@ const CheckoutWrapper = ({ children }: { children: React.ReactNode }) => {
                     options={options}
                     stripe={stripePromise}
                 >
-                    {children}
+                    <CheckoutForm />
+                    {children && children}
                 </Elements>
             )}
         </div>
