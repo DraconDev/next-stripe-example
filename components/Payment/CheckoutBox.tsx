@@ -19,7 +19,7 @@ const CheckoutBox = ({ children }: { children?: React.ReactNode }) => {
             {
                 id: "1",
                 name: "Item 1",
-                price: 20,
+                price: 2000,
                 quantity: 1,
                 currency: "USD",
             },
