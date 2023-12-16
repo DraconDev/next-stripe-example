@@ -1,4 +1,4 @@
-import { CartItem } from "@/types/cart";
+import { CartItem } from "@/types/payment";
 
 export async function generatePaymentIntentWithCart(cartItems: CartItem[]) {
     try {

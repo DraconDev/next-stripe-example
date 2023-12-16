@@ -1,5 +1,5 @@
 "use client";
-import { CartItem } from "@/types/cart";
+import { CartItem } from "@/types/payment";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
