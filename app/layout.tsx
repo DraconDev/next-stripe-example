@@ -20,7 +20,7 @@ export default function RootLayout({
             className="h-screen w-full bg-slate-200"
         >
             <body
-                className={`flex items-center justify-center ${inter.className}`}
+                className={`flex items-center justify-center bg-slate-200 ${inter.className}`}
             >
                 {children}
             </body>
