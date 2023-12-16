@@ -13,6 +13,15 @@ export default function CheckoutForm() {
     const [message, setMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+    // const [urlUpdate, setUrlUpdate] = useState<string | null>(null);
+
+    // React.useEffect(() => {
+    //     const queryClientSecret = new URLSearchParams(
+    //         window.location.search
+    //     ).get("payment_intent_client_secret");
+    //     setUrlUpdate(queryClientSecret);
+    // }, []);
+
     React.useEffect(() => {
         if (!stripe) {
             return;
@@ -44,7 +53,8 @@ export default function CheckoutForm() {
                     break;
             }
         });
-    }, [stripe]);
+        // Add window.location.search as a dependency
+    }, [stripe, window.location.search]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -61,7 +71,7 @@ export default function CheckoutForm() {
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                return_url: "http://localhost:3000",
+                return_url: "http://localhost:3000/",
             },
         });
 
@@ -70,8 +80,11 @@ export default function CheckoutForm() {
         // your `return_url`. For some payment methods like iDEAL, your customer will
         // be redirected to an intermediate site first to authorize the payment, then
         // redirected to the `return_url`.
-        if (error.type === "card_error" || error.type === "validation_error") {
-            setMessage(error.message ?? "An unexpected error occurred.");
+        if (
+            error?.type === "card_error" ||
+            error?.type === "validation_error"
+        ) {
+            setMessage(error.message ?? "");
         } else {
             setMessage("An unexpected error occurred.");
         }
@@ -79,14 +92,11 @@ export default function CheckoutForm() {
         setIsLoading(false);
     };
 
-    // const paymentElementOptions = {
-    //     layout: "tabs",
-    // };
-
     return (
         <form
             id="payment-form"
             onSubmit={handleSubmit}
+            className="bg-slate-300 p-3"
         >
             <PaymentElement
                 id="payment-element"
