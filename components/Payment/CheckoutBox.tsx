@@ -11,7 +11,7 @@ const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
-const CheckoutBox = () => {
+const CheckoutBox = ({ children }: { children?: React.ReactNode }) => {
     const [clientSecret, setClientSecret] = React.useState("");
 
     useEffect(() => {
@@ -45,6 +45,7 @@ const CheckoutBox = () => {
                     stripe={stripePromise}
                 >
                     <CheckoutForm />
+                    {children && children}
                 </Elements>
             )}
         </div>
