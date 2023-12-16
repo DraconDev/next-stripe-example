@@ -4,10 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const calculateOrderAmount = (items: CartItem[]) => {
-    // Replace this constant with a calculation of the order's amount
-    // Calculate the order total on the server to prevent
-    // people from directly manipulating the amount on the client
-    return 1400;
+    let sum = 0;
+    for (const item of items) {
+        sum += item.price * item.quantity;
+    }
+    return sum;
 };
 
 export async function POST(req: NextRequest, res: NextResponse) {
