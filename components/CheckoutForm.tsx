@@ -1,57 +1,114 @@
 "use client";
-import { CartItem } from "@/types/cart";
-import getStripe from "@/utils/get-stripe";
-import { FormEvent } from "react";
-import { Stripe } from "stripe";
+import {
+    PaymentElement,
+    useElements,
+    useStripe,
+} from "@stripe/react-stripe-js";
+import React, { useState } from "react";
 
-type Props = {};
+export default function CheckoutForm() {
+    const stripe = useStripe();
+    const elements = useElements();
 
-const CheckoutForm = (props: Props) => {
-    const cartItems: CartItem[] = [];
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        // Create a Checkout Session.
-        const response = await fetch("/api/checkout_sessions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ cartItems }),
-        });
+    const [message, setMessage] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-        if (!response.ok) {
-            console.error("Network response was not ok");
+    React.useEffect(() => {
+        if (!stripe) {
             return;
         }
 
-        const checkoutSession: Stripe.Checkout.Session = await response.json();
+        const clientSecret = new URLSearchParams(window.location.search).get(
+            "payment_intent_client_secret"
+        );
 
-        // Redirect to Checkout.
-        const stripe = await getStripe();
-        const { error } = await stripe!.redirectToCheckout({
-            // Make the id field from the Checkout Session creation API response
-            // available to this file, so you can provide it as parameter here
-            // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
-            sessionId: checkoutSession.id,
+        if (!clientSecret) {
+            return;
+        }
+
+        stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+            switch (paymentIntent?.status) {
+                case "succeeded":
+                    setMessage("Payment succeeded!");
+                    break;
+                case "processing":
+                    setMessage("Your payment is processing.");
+                    break;
+                case "requires_payment_method":
+                    setMessage(
+                        "Your payment was not successful, please try again."
+                    );
+                    break;
+                default:
+                    setMessage("Something went wrong.");
+                    break;
+            }
         });
-        // If `redirectToCheckout` fails due to a browser or network
-        // error, display the localized error message to your customer
-        // using `error.message`.
-        console.warn(error.message);
+    }, [stripe]);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (!stripe || !elements) {
+            // Stripe.js hasn't yet loaded.
+            // Make sure to disable form submission until Stripe.js has loaded.
+            return;
+        }
+
+        setIsLoading(true);
+
+        const { error } = await stripe.confirmPayment({
+            elements,
+            confirmParams: {
+                // Make sure to change this to your payment completion page
+                return_url: "http://localhost:3000",
+            },
+        });
+
+        // This point will only be reached if there is an immediate error when
+        // confirming the payment. Otherwise, your customer will be redirected to
+        // your `return_url`. For some payment methods like iDEAL, your customer will
+        // be redirected to an intermediate site first to authorize the payment, then
+        // redirected to the `return_url`.
+        if (error.type === "card_error" || error.type === "validation_error") {
+            setMessage(error.message ?? "An unexpected error occurred.");
+        } else {
+            setMessage("An unexpected error occurred.");
+        }
+
+        setIsLoading(false);
     };
-    // ...
+
+    // const paymentElementOptions = {
+    //     layout: "tabs",
+    // };
 
     return (
-        <div className="flex flex-col">
-            CheckoutForm
+        <form
+            id="payment-form"
+            onSubmit={handleSubmit}
+        >
+            <PaymentElement
+                id="payment-element"
+                // options={paymentElementOptions}
+            />
             <button
-                onClick={handleSubmit}
-                className="p-2"
+                disabled={isLoading || !stripe || !elements}
+                id="submit"
             >
-                buy
+                <span id="button-text">
+                    {isLoading ? (
+                        <div
+                            className="spinner"
+                            id="spinner"
+                        ></div>
+                    ) : (
+                        "Pay now"
+                    )}
+                </span>
             </button>
-        </div>
+            {/* Show any error or success messages */}
+            {message && <div id="payment-message">{message}</div>}
+        </form>
     );
-};
-
-export default CheckoutForm;
+}

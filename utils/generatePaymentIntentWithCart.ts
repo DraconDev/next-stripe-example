@@ -1,6 +1,6 @@
 import { CartItem } from "@/types/cart";
 
-async function generatePaymentIntentWithCart(cartItems: CartItem[]) {
+export async function generatePaymentIntentWithCart(cartItems: CartItem[]) {
     try {
         const response = await fetch("/api/create-payment-intent", {
             method: "POST",
